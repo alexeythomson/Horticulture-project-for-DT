@@ -1,5 +1,5 @@
-import tkinter
+import json
 '''code to compare apple prices '''
-with open("resources/apples.txt", 'r') as file:
-    info = file.read()
+with open("resources/apples.json", 'r') as file:
+    info = json.load(file)
     print(info)
