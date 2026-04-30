@@ -1,5 +1,5 @@
 import json
-'''code to compare apple prices '''
+'''code to show profitability '''
 
 class Apple:
     def __init__(self, weight, v_quality, i_quality, s_time):
