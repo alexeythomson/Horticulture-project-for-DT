@@ -12,7 +12,9 @@ class Apple:
     def __repr__(self):
         return f"{self.name}, {self.weight} grams, {self.v_quality}, {self.i_quality}, {self.s_time}"
 
-apple_attributes = json.load(open("resources/apples.json", 'r'))
+with open("resources/apples.json", 'r') as f:
+    apple_attributes = json.load(f)
+
 
 Royal_Gala = Apple(**apple_attributes['Royal_gala'])
 
