@@ -1,8 +1,9 @@
 {
     "Royal_gala": {
-        "Weight": 222,
-        "V_Quality": 5,
-        "I_Quality": 5,
-        "S_Time": 3
+        "name": "royal gala",
+        "weight": 222,
+        "v_quality": 5,
+        "i_quality": 5,
+        "s_time": 3
     }
 }
