@@ -22,7 +22,7 @@ class Apple:
 #this will calculate the score of the apple
 #this score will then be used to make an estimated value for the apple
     def calculate_price_score(self):
-        return self.weight + ((self.v_quality + self.i_quality + self.s_time) * 5)
+        return self.weight + ((self.v_quality + self.i_quality + self.s_time) * 10)
 
 
 
