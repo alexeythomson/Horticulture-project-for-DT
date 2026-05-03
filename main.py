@@ -19,11 +19,18 @@ class Apple:
                 f"{self.v_quality} out of 10, "
                 f"{self.i_quality} out of 10, {self.s_time} out of 10")
 
-#opens my file and by using 'with' it auto closes the file after doing the task
+#this will calculate the score of the apple
+#this score will then be used to make an estimated value for the apple
+    def calculate_price_score(self):
+        return self.weight + ((self.v_quality + self.i_quality + self.s_time) * 5)
+
+
+
+#opens the file and by using 'with' it auto closes the file after doing the task
 with open("resources/apples.json", 'r') as f:
-    apple_attributes = json.load(f)
+    apple_data = json.load(f)
 
 #creates an instance from the apple class for royal gala
-Royal_Gala = Apple(**apple_attributes['Royal_gala'])
-
+Royal_Gala = Apple(**apple_data['Royal_gala'])
+print("price score:", Royal_Gala.calculate_price_score())
 print(Royal_Gala)
