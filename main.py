@@ -23,12 +23,20 @@ class Apple:
 
     #this will calculate the score of the apple
     #this score will then be used to make an estimated value for the apple
-    def calculate_price_score(self):
-        return (self.weight/1.25) + ((self.v_quality + self.i_quality + self.s_time) * 10)
+    def calculate_apple_score(self):
+        return (self.weight/1.25) + ((self.v_quality + self.i_quality + self.s_time) * 12.5)
 
+#calculates the estimated values of apples
     def calculate_price_estimate(self):
-        return ((self.weight/1.25) + ((self.v_quality + self.i_quality + self.s_time) * 10)
-                )/250
+        apple_score = self.calculate_apple_score()
+        return apple_score / 250
+
+#calculates customer interest out of 100 (caps at 100)
+    def calculate_customer_interest(self):
+        apple_score = self.calculate_apple_score()
+        return (apple_score / 15) + (self.v_quality + self.i_quality
+        + self.s_time) * 1.8777
+
 #opens the file and by using 'with' it auto closes the file after doing the task
 with open("resources/apples.json", 'r') as f:
     apple_data = json.load(f)
@@ -36,6 +44,8 @@ with open("resources/apples.json", 'r') as f:
 #creates an instance from the apple class for royal gala
 #using ** checks the dictionary for the different attributes.
 Royal_Gala = Apple(**apple_data['Royal_gala'])
-print("price score:", Royal_Gala.calculate_price_score())
+print("price score:", Royal_Gala.calculate_apple_score())
 print(Royal_Gala)
-print("Estimated price:", Royal_Gala.calculate_price_estimate(), "$", 2)
+print(f"Estimated revenue per apple: ${Royal_Gala.calculate_price_estimate():.2f}")
+print("Customer interest:", round((Royal_Gala.calculate_customer_interest()),2)
+      ,"out of 100")
