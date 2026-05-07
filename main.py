@@ -34,9 +34,9 @@ class Apple:
         different from what they are in the JSON file.
         This will make every interaction different from the last.
         """
-        self.v_quality = min(10, self.v_quality + random.uniform(-1.5, 3))
-        self.i_quality = min(10, self.i_quality + random.uniform(-1.5, 3))
-        self.s_time = min(10, self.s_time + random.uniform(-1.5, 3))
+        self.v_quality = min(10, self.v_quality + random.uniform(-1.5, 4))
+        self.i_quality = min(10, self.i_quality + random.uniform(-1.5, 4))
+        self.s_time = min(10, self.s_time + random.uniform(-1.5, 4))
         self.weight = round(self.weight * random.uniform(0.9, 1.15), 1)
 
     #   this will calculate the score of the apple
@@ -57,10 +57,13 @@ class Apple:
                                      + self.s_time) * 1.8777
 
     def cost_of_goods_sold(self):
-        cogs = 0.5 + random.uniform(-0.075, 0.1)
+        cogs = 0.5 + random.uniform(-0.05, 0.1)
         revenue = self.calculate_price_estimate()
         return revenue * cogs
 
+    def profitability_score(self):
+        return (self.calculate_price_estimate() - self.cost_of_goods_sold()
+                * (self.calculate_customer_interest() / 100))
 
 # opens the file and by using 'with' it auto closes the file after doing the task
 with open("resources/apples.json", 'r') as f:
@@ -78,7 +81,8 @@ print(f"{Royal_Gala}")
 print(f"Estimated revenue per apple: ${Royal_Gala.calculate_price_estimate():.2f}")
 print("Customer interest:", round((Royal_Gala.calculate_customer_interest()), 2)
       , "out of 100")
-print(f"cost of goods sold ${Royal_Gala.cost_of_goods_sold():.1f}")
+print(f"cost of goods sold ${Royal_Gala.cost_of_goods_sold():.2f}")
+print(f"profitability score: {Royal_Gala.profitability_score():.2f}")
 
 print()
 
@@ -86,5 +90,5 @@ print(Granny_Smith)
 print(f"Estimated revenue per apple: ${Granny_Smith.calculate_price_estimate():.2f}")
 print("Customer interest:", round((Granny_Smith.calculate_customer_interest()), 2)
       , "out of 100")
-print(f"cost of goods sold ${Granny_Smith.cost_of_goods_sold():.1f}")
-
+print(f"cost of goods sold ${Granny_Smith.cost_of_goods_sold():.2f}")
+print(f"profitability score: {Granny_Smith.profitability_score():.2f}")
