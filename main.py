@@ -12,6 +12,7 @@ print()
 
 class Apple:
     """Class to represent an apple"""
+
     def __init__(self, name, weight, v_quality, i_quality, s_time):
         """makes the blueprint for all objects (apples) under this class."""
         self.name = name
@@ -64,6 +65,7 @@ class Apple:
     def profitability_score(self):
         return (self.calculate_price_estimate() - self.cost_of_goods_sold()
                 * (self.calculate_customer_interest() / 100))
+
 
 # opens the file and by using 'with' it auto closes the file after doing the task
 with open("resources/apples.json", 'r') as f:
