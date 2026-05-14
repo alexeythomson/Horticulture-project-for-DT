@@ -1,0 +1,16 @@
+{
+    "Royal_Gala": {
+        "name": "royal gala apple",
+        "weight": 222,
+        "v_quality": 5,
+        "i_quality": 5,
+        "s_time": 4
+    },
+    "Granny_Smith": {
+        "name": "granny smith apple",
+        "weight": 173.5,
+        "v_quality": 5,
+        "i_quality": 5,
+        "s_time": 6.5
+    }
+}
