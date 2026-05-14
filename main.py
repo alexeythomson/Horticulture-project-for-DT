@@ -7,7 +7,6 @@ import json
 import random
 
 # this print is to separate the program from the top text
-print()
 
 
 class Apple:
@@ -71,7 +70,30 @@ class Apple:
 with open("resources/apples.json", 'r') as f:
     apple_data = json.load(f)
 
-# creates an instance from the apple class for royal gala
+
+
+print()
+
+print("in this program you will have to calculate which apple has a higher profitability \n"
+      "the way this is done is by doing this formula: \n \n"
+      "estimated revenue per apple - cost of goods sold * (customer interest / 100) \n \n"
+      "the higher the profitability score the higher the profit. \n")
+
+while True:
+    try:
+        menu_selection = int(input("input number: 1 - start program | 2 - quit "))
+        if menu_selection == 1:
+            break
+        elif menu_selection == 2:
+            quit()
+        else:
+            print()
+            print("please enter either 1 or 2 \n")
+    except ValueError:
+        print()
+        print("please enter either 1 or 2 \n")
+
+        # creates an instance from the apple class for royal gala
 # using ** checks the dictionary for the different attributes.
 Royal_Gala = Apple(**apple_data['Royal_Gala'])
 Granny_Smith = Apple(**apple_data['Granny_Smith'])
@@ -94,12 +116,3 @@ print("Customer interest:", round((Granny_Smith.calculate_customer_interest()), 
       , "out of 100")
 print(f"cost of goods sold ${Granny_Smith.cost_of_goods_sold():.2f}")
 print(f"profitability score: {Granny_Smith.profitability_score():.2f}")
-
-print()
-
-print("in this program you will have to calculate which apple has a higher profitability \n"
-      "the way this is done is by doing this formula: \n \n"
-      "estimated revenue per apple - cost of goods sold * (customer interest / 100) \n \n"
-      "the higher the profitability score the higher the profit.")
-
-
