@@ -12,6 +12,7 @@ print()
 
 class Apple:
     """Class to represent an apple"""
+
     def __init__(self, name, weight, v_quality, i_quality, s_time):
         """makes the blueprint for all objects (apples) under this class."""
         self.name = name
@@ -65,6 +66,7 @@ class Apple:
         return (self.calculate_price_estimate() - self.cost_of_goods_sold()
                 * (self.calculate_customer_interest() / 100))
 
+
 # opens the file and by using 'with' it auto closes the file after doing the task
 with open("resources/apples.json", 'r') as f:
     apple_data = json.load(f)
@@ -92,3 +94,12 @@ print("Customer interest:", round((Granny_Smith.calculate_customer_interest()), 
       , "out of 100")
 print(f"cost of goods sold ${Granny_Smith.cost_of_goods_sold():.2f}")
 print(f"profitability score: {Granny_Smith.profitability_score():.2f}")
+
+print()
+
+print("in this program you will have to calculate which apple has a higher profitability \n"
+      "the way this is done is by doing this formula: \n \n"
+      "estimated revenue per apple - cost of goods sold * (customer interest / 100) \n \n"
+      "the higher the profitability score the higher the profit.")
+
+
