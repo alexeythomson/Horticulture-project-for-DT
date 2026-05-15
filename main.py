@@ -6,8 +6,19 @@ import json
 import random
 import time
 
+PRICE_ESTIMATE_DIVIDER = 250
+APPLE_SCORE_DIVIDER = 1.25
+APPLE_SCORE_MULTIPLICATION = 12.5
+CUSTOMER_INTEREST_DIVIDER = 15
+CUSTOMER_INTEREST_MULTIPLICATION = 1.8
+PROFITABILITY_SCORE_DIVIDER = 100
+
+# these prevent literals in my code
+
 
 def terminal_clear():
+    """this clears the space between each question and prevents
+    a pile up which can be annoying for the end user."""
     print("\n" * 20)
 
 
@@ -23,6 +34,7 @@ class Apple:
         self.i_quality = i_quality
         self.s_time = s_time
         self.cogs_rate = 0.5 + random.uniform(-0.05, 0.1)
+
     # I added in the cogs_rate here because I found a bug that made
     # it so the cost of goods rerolled twice causing the answers to become wrong
 
@@ -34,40 +46,44 @@ class Apple:
                 f"{self.v_quality:.1f} v_quality out of 10, "
                 f"{self.i_quality:.1f} i_quality out of 10, "
                 f"{self.s_time:.1f} s_quality out of 10.")
+
     #   __repr__ is useful for seeing the attributes of the apple
     #   without the __repr__ the code will print "<__main__.Apple object at 0x000...>"
 
     def apple_variance(self):
         """This will randomly change the apple attributes to become
         different from what they are in the JSON file.
-        This will make every interaction different from the last.
-        """
+        This will make every interaction different from the last which makes it good
+        for the end user. I use min to make sure the attributes
+        don't go over the maximum which is 10 as well as the max for weight to prevent it
+        from going into the negatives."""
         self.v_quality = min(10, self.v_quality + random.uniform(-1.5, 4))
         self.i_quality = min(10, self.i_quality + random.uniform(-1.5, 4))
         self.s_time = min(10, self.s_time + random.uniform(-1.5, 4))
-        self.weight = round(self.weight * random.uniform(0.9, 1.15), 1)
+        self.weight = round(max(0, min(300, self.weight * random.uniform(0.9, 1.15))), 1)
 
     def calculate_apple_score(self):
         """this calculates a score for the apple which the price estimate and consumer interest
         calculations will work off of, this helps reduce unnecessary code"""
 
-        return (self.weight / 1.25) + ((self.v_quality + self.i_quality + self.s_time) * 12.5)
+        return (self.weight / APPLE_SCORE_DIVIDER) + ((self.v_quality + self.i_quality + self.s_time)
+                                                      * APPLE_SCORE_MULTIPLICATION)
 
     def calculate_price_estimate(self):
-        """calculates the estimated revenue per apple"""
-
+        """calculates the estimated revenue per apple using the apple score."""
         apple_score = self.calculate_apple_score()
-        return apple_score / 250
+        return apple_score / PRICE_ESTIMATE_DIVIDER
 
     def calculate_customer_interest(self):
         """Calculates the customer interest on an apple by using the apple score together with
         a multiple that will increase depending on certain attributes.
-        For this code the *1.877 is so specific because it makes sure the customer interest score
-        doesn't go over 100 out of 100 causing an error."""
+        For this code I add in a min(100, score) which basically returns whatever is lower, the calculated score
+        or if the scores over 100, the code returns 100. This prevents it from going over the max"""
 
         apple_score = self.calculate_apple_score()
-        return (apple_score / 15) + (self.v_quality + self.i_quality
-                                     + self.s_time) * 1.8777
+        score = (apple_score / CUSTOMER_INTEREST_DIVIDER) + (self.v_quality + self.i_quality
+                                                             + self.s_time) * CUSTOMER_INTEREST_MULTIPLICATION
+        return min(100, score)
 
     def cost_of_goods_sold(self):
         """this is a calculation to figure out the total production cost of the specific apple,
@@ -85,7 +101,7 @@ class Apple:
         affects profitability instead of just taking away production cost from revenue from an apple."""
 
         return (self.calculate_price_estimate() - self.cost_of_goods_sold()
-                * (self.calculate_customer_interest() / 100))
+                * (self.calculate_customer_interest() / PROFITABILITY_SCORE_DIVIDER))
 
 
 with open("resources/apples.json", 'r') as f:
@@ -121,51 +137,52 @@ while True:
     print(f"question number {question_number}")
     time.sleep(1.25)
     print()
-    Royal_Gala = Apple(**apple_data['Royal_Gala'])
-    Granny_Smith = Apple(**apple_data['Granny_Smith'])
+    royal_gala = Apple(**apple_data['Royal_Gala'])
+    granny_smith = Apple(**apple_data['Granny_Smith'])
     # creates an instance from the apple class for royal gala
     # using ** checks the dictionary for the different attributes.
 
-    Granny_Smith.apple_variance()
-    Royal_Gala.apple_variance()
+    granny_smith.apple_variance()
+    royal_gala.apple_variance()
     # these functions change the attribute scores of the apples to make them unique everytime
 
-    if Royal_Gala.profitability_score() > Granny_Smith.profitability_score():
+    if royal_gala.profitability_score() > granny_smith.profitability_score():
         right_answer = "A"
-        right_profitability_score = round(Royal_Gala.profitability_score(), 2)
+        right_profitability_score = round(royal_gala.profitability_score(), 2)
 
-    elif Granny_Smith.profitability_score() > Royal_Gala.profitability_score():
+    elif granny_smith.profitability_score() > royal_gala.profitability_score():
         right_answer = "B"
-        right_profitability_score = round(Granny_Smith.profitability_score(), 2)
+        right_profitability_score = round(granny_smith.profitability_score(), 2)
 
     else:
         right_answer = "C"
-        right_profitability_score = round(Royal_Gala.profitability_score(), 2)
+        right_profitability_score = round(royal_gala.profitability_score(), 2)
+    print()
+
+    print(f"{royal_gala}")
+    print(f"Estimated revenue per apple: ${royal_gala.calculate_price_estimate():.2f}")
+    print("Customer interest:", round((royal_gala.calculate_customer_interest()), 2)
+          , "out of 100")
+    print(f"cost of goods sold: ${royal_gala.cost_of_goods_sold():.2f}")
 
     print()
 
-    print(f"{Royal_Gala}")
-    print(f"Estimated revenue per apple: ${Royal_Gala.calculate_price_estimate():.2f}")
-    print("Customer interest:", round((Royal_Gala.calculate_customer_interest()), 2)
+    print(granny_smith)
+    print(f"Estimated revenue per apple: ${granny_smith.calculate_price_estimate():.2f}")
+    print("Customer interest:", round((granny_smith.calculate_customer_interest()), 2)
           , "out of 100")
-    print(f"cost of goods sold: ${Royal_Gala.cost_of_goods_sold():.2f}")
-    print(Royal_Gala.profitability_score())
-    print()
-
-    print(Granny_Smith)
-    print(f"Estimated revenue per apple: ${Granny_Smith.calculate_price_estimate():.2f}")
-    print("Customer interest:", round((Granny_Smith.calculate_customer_interest()), 2)
-          , "out of 100")
-    print(f"cost of goods sold: ${Granny_Smith.cost_of_goods_sold():.2f}")
-    print(Granny_Smith.profitability_score())
+    print(f"cost of goods sold: ${granny_smith.cost_of_goods_sold():.2f}")
 
     print()
     while True:
         try:
-            program_selection = int(input("1: answer question | 2: help | input number: "))
+            program_selection = int(input("1: answer question | 2: help | 3: quit | input number: "))
             if program_selection == 1:
                 break
             # takes the user straight to the answer area.
+            elif program_selection == 3:
+                quit()
+            # another quit for when the user wants to stop the program
             elif program_selection == 2:
                 print("use the formula provided above to figure out which of the two apples is more profitable. \n"
                       "once you have figured it out, select the apple that has the most profitability \n"
@@ -183,10 +200,10 @@ while True:
                 # and so taking them to the answer section is the best thing to do.
             else:
                 print()
-                print("please enter either 1 or 2 \n")
+                print("please enter either 1, 2, or 3 \n")
         except ValueError:
             print()
-            print("please enter either 1 or 2 \n")
+            print("please enter either 1, 2, or 3 \n")
     print()
     while True:
         user_answer = input("A: Royal Gala , B: Granny Smith , or C: Tie | which one is more profitable: ").upper()
@@ -196,17 +213,18 @@ while True:
                 try:
                     user_profitability_score = float(input(f"Enter {right_answer} profitability score "
                                                            f"(rounded to the nearest 2 decimals): "))
-                    if user_profitability_score == right_profitability_score:
+                    if abs(user_profitability_score - right_profitability_score) <= 0.02:
                         print("correct again, congratulations")
                         time.sleep(2.5)
                         break
-                    elif user_profitability_score != right_profitability_score:
+                    else:
                         print(f"wrong answer, right answer was {right_profitability_score}")
                         time.sleep(2.5)
                         break
                 except ValueError:
                     print("invalid input")
             break
+            # this break takes the code out of an endless answer cycle
         elif user_answer not in ["A", "B", "C"]:
             print("invalid input")
         else:
